@@ -2,17 +2,17 @@ from GameEngine import GameEngine
 from RandomPlayer import RandomPlayer
 from ThirtyOne.ThirtyOneYOURNAMEPlayer import ThirtyOneYOURNAMEPlayer
 from TiePlayer import TiePlayer
-from MinimaxPlayer import MinimaxPlayer
 
 from ThirtyOne.ThirtyOneCPUPlayerAdapter import ThirtyOneCPUPlayerAdapter
 from ThirtyOne.ThirtyOneHumanPlayer import ThirtyOneHumanPlayer
 from ThirtyOne.ThirtyOneBoard import ThirtyOneBoard
 
-player1 = ThirtyOneHumanPlayer("Human")
-player2 = RandomPlayer("Random bot 1")
+#player1 = ThirtyOneHumanPlayer("Dr. Dong")
+player1 = RandomPlayer("Random bot 1")
+player2 = RandomPlayer("Random bot 2")
 player3 = ThirtyOneCPUPlayerAdapter(ThirtyOneYOURNAMEPlayer())
 
-board = ThirtyOneBoard([player1, player2, player3])
+board = ThirtyOneBoard([player3, player2, player1])
 
 engine = GameEngine(board)
 
