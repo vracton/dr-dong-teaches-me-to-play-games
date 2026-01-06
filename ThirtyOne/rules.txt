@@ -1,0 +1,6 @@
+ - 3 players
+ - each player starts with 3 cards
+ - face cards are 10, ace is 11, and numbers cards are as expected
+ - on your turn you can choose from the discard pile or deck and then discard one of your cards
+ - game ends once someone gets 31 and calls it or someone knocks
+ - once someone knocks, their turn immediately ends, then everyone plays one more turn and the person with the highest score wins

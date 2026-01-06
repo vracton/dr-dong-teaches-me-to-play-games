@@ -1,0 +1,3 @@
+if starting hand value 20+, knock
+
+if you start with a face card of a suit, 
