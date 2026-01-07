@@ -4,7 +4,7 @@ class TiePlayer(Player):
 
     def __init__(self, players):
         super().__init__("Tie")
-        self.winner = players
+        self.players = players
 
     def getMove(self, board):
         raise "This should never get called!"
