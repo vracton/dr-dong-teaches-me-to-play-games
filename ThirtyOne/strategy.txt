@@ -1,3 +1,57 @@
 if starting hand value 20+, knock
 
-if you start with a face card of a suit, 
+if you start with a face card of a suit, try playing for that suit
+if you don't start with a face card, play for whatever suit you have most points in
+until you either see a face ceard in discard pile, get a face card from the draw pile, or if the discard pile
+gives you a higher score than what suit you are currently playing for (unless the suit has a face card already that
+is in ur hand if ykwim)
+
+
+keep track of opponents recently picked suits in a list from discard pile along with the values they picked up
+to ahave a guess at their score
+
+
+draw strategy: 
+	a face card is a normal face card (king, queen, jack) or an ace
+	
+	if you have a face card in your hand:
+		only pick from discard pile if it is the suit you are playing for AND would deliver a 
+		higher value than what you currently have of that suit in your hand. otherwise, pick from 
+		the draw pile
+
+		if discard pile card is a face card: 
+			if it gives you a higher value in another suit than your current suit, pick it
+			otherwise if it is your current suit, also pick it
+			otherwise if it doesn't give you a higher value than your current suit, pick from draw pile
+
+	if you don't have a face card in your hand: 
+		pick from discard pile if it would give a higher point value in any suit than you currently have in your hand
+
+	DO NOT IMPLEMENT THIS RN IMPLEMENT THIS LATER 
+	also consider if opponent has picked up 2 face cards of your suit:
+		switch suits to second highest
+
+
+	KNOCK STRATEGY:
+		if >= 26 knock
+
+		
+
+discard strategy: 
+	find the point value per suit in your hand with 4 cards 
+	if you have a face card suit in your hand: 
+		if there is another face card that is not your current suit:
+			if the value of that suit is higher than your current suit:
+				change your suit to that suit
+				discard the lowest rank card amongst the suits you are not playing
+			elif value is not higher:
+				discard the lowest rank card amongst the suits you are not playing
+		else if there is not another face card:
+			discard the lowest rank card amongst the suits you are not playing
+			TODO: CONSIDER TROLLING BY DROPPPING A SUIT UR PLAYING SO ENEMIES DON'T KNOW UR SUIT
+
+		else:
+			discard the lowest rank card that isn't that suit
+
+
+TODO:
