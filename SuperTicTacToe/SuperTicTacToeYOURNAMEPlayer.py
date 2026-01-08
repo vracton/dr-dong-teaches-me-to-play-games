@@ -60,7 +60,7 @@ def singleBoardScore(board: SingleTicTacToeBoard, player: Player) -> float:
             break
     score += f(numinAntiDiag)
 
-    return score / 8.0;
+    return score / 8.0
 
 
 def opponentOf(board: SuperTicTacToeBoard, player: Player) -> Player:
@@ -89,7 +89,7 @@ class SuperTicTacToeYOURNAMEPlayer(MinimaxPlayer):
                 if singleBoard.winner is not None or singleBoard.is_full:
                     continue
                 local_score += (singleBoardScore(singleBoard, player) - singleBoardScore(singleBoard, opponent))
-                counted += 1;
+                counted += 1
         
         if counted > 0:
             local_score /= counted
@@ -104,4 +104,5 @@ class SuperTicTacToeYOURNAMEPlayer(MinimaxPlayer):
 
         total_score = (0.50 * local_score) + (0.40 * macro_score) + (0.10 * current_score)
         
-        return total_score
+        print(total_score)
+        return total_score * 1.5

@@ -160,6 +160,6 @@ class SuperTicTacToeBoard(GameState):
         self.master_board.draw_board(pygame, self.screen, self.left_disp_offset, self.top_disp_offset, self.box_size, 3, self.players)
 
         pygame.display.flip()
-        pygame.time.wait(10)
+        #pygame.time.wait()
         
 

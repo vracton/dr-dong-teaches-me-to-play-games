@@ -6,6 +6,10 @@ from SuperTicTacToe.SuperTicTacToeBoard import SuperTicTacToeBoard
 from SuperTicTacToe.SuperTicTacToeHumanPlayer import SuperTicTacToeHumanPlayer
 from SuperTicTacToe.SuperTicTacToeRandomPlayer import SuperTicTacToeRandomPlayer
 from SuperTicTacToe.SuperTicTacToeYOURNAMEPlayer import SuperTicTacToeYOURNAMEPlayer
+from SuperTicTacToe.SuperTicTacToeMihirLorenzoDeenPlayer import (
+    SuperTicTacToeMihirLorenzoDeenPlayer,
+)
+
 
 #import all files in ThirtyOne/StudentFiles here
 
@@ -46,7 +50,7 @@ def run_game(players):
 
 def default_run():
     player1 = SuperTicTacToeYOURNAMEPlayer()
-    player2 = SuperTicTacToeYOURNAMEPlayer()
+    player2 = SuperTicTacToeMihirLorenzoDeenPlayer()
     
     run_game([player2, player1])
 
