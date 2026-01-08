@@ -1,7 +1,8 @@
 from SushiGo.Card import Card
 
-class SushiGoYOURNAMEPlayer():
-    def __init__(self, name = None):
+
+class SushiGoYOURNAMEPlayer:
+    def __init__(self, name=None):
         self.name = "Your names here"
         if name:
             self.name = name
@@ -17,17 +18,21 @@ class SushiGoYOURNAMEPlayer():
             Card.Type.EGG_NIGIRI: 9,
             Card.Type.PUDDING: 10,
             Card.Type.WASABI: 11,
-            Card.Type.CHOPSTICKS: 12
+            Card.Type.CHOPSTICKS: 12,
         }
-        self.priorities = {k: v for k, v in sorted(self.priorities.items(), key=lambda item: item[1])}
+        self.priorities = {
+            k: v for k, v in sorted(self.priorities.items(), key=lambda item: item[1])
+        }
 
     def choose_move(self, hand, visible_cards, current_round):
         # Return the index of the card to play from hand (from 0 to len(hand)-1)
-        #return 0  # Example: always play the first card in hand
+        # return 0  # Example: always play the first card in hand
         best_card_index = 0
         for i in range(len(hand)):
-            if self.priorities[hand[i].type] < self.priorities[hand[best_card_index].type]:
+            if (
+                self.priorities[hand[i].type]
+                < self.priorities[hand[best_card_index].type]
+            ):
                 best_card_index = i
 
         return best_card_index
-
