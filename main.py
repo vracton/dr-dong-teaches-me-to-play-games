@@ -45,10 +45,10 @@ def run_game(players):
     return scores
 
 def default_run():
-    player1 = SuperTicTacToeRandomPlayer()
+    player1 = SuperTicTacToeYOURNAMEPlayer()
     player2 = SuperTicTacToeYOURNAMEPlayer()
     
-    run_game([player1, player2])
+    run_game([player2, player1])
 
     # for player in scores:
     #     print(f"Player {player.name}: {scores[player]} points")
