@@ -1,0 +1,8 @@
+generally, use dijkstra or A* 
+
+every single turn check if you are prone to being blocked via another dijksta to see how many open paths you have based on walls (not on first move)
+
+then from there you block their blockage of the longer path so you can go the hsorter path
+
+and then also every move you do another calculation to see the enemy's position and run 
+maybe a local greedy search of some kind to find a wall to maximize the amount of movecs it would take to surpass the wall

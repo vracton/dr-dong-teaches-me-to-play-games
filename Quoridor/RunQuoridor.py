@@ -5,6 +5,10 @@ from TiePlayer import TiePlayer
 from Quoridor.QuoridorBoard import QuoridorBoard
 from Quoridor.QuoridorHumanPlayer import QuoridorHumanPlayer
 from Quoridor.QuoridorYOURNAMEPlayer import QuoridorYOURNAMEPlayer
+from Quoridor.QuoridorAggressiveWallPlayer import QuoridorAggressiveWallPlayer
+from Quoridor.QuoridorBlockerPlayer import QuoridorBlockerPlayer
+from Quoridor.QuoridorSahooPlayer import QuoridorSahooPlayer
+
 
 def run_game(players, print = True):
     board = QuoridorBoard(players)
@@ -18,12 +22,12 @@ def run_game(players, print = True):
     return scores
 
 def default_run(output = True):
-    player1 = QuoridorHumanPlayer("Dr. Dong")
-    player2 = RandomPlayer("Random bot 1")
+    player1 = QuoridorSahooPlayer()
+    player2 = QuoridorAggressiveWallPlayer()
     player3 = RandomPlayer("Random bot 2")
     player4 = QuoridorYOURNAMEPlayer()
 
-    scores = run_game([player1, player2], output)
+    scores = run_game([player2, player1], output)
 
     for player in scores:
         print(f"Player {player.name}: {scores[player]} points")
