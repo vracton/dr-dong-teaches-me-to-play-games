@@ -25,6 +25,9 @@ class MinimaxPlayer(Player):
 
         currentPlayer = board.currentPlayer()
         options = board.getPossibleBoardsAndMoves()
+        if len(options) == 0:
+            result = board.scoreBoard()
+            return None, result[player]
         bestOptions = []
         bestValue = float("-inf")
         for option in options:
