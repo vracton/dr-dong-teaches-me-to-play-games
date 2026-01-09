@@ -147,7 +147,7 @@ class SushiGoBoard(GameState):
 
             # Check for end of round
             if len(self.hands[self.players[0]]) == 0:
-                print("End of round!")
+                # print("End of round!")
                 for player in self.players:
                     round_score = self.score_cards(player, self.played_cards[player])
                     self.scores[player] += round_score

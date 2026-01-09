@@ -6,6 +6,9 @@ from TiePlayer import TiePlayer
 # from SuperTicTacToe.SuperTicTacToeHumanPlayer import SuperTicTacToeHumanPlayer
 # from SuperTicTacToe.SuperTicTacToeYOURNAMEPlayer import SuperTicTacToeYOURNAMEPlayer
 
+from SuperTicTacToe.RunSuperTicTacToe import run_super_tic_tac_toe
+from Quoridor.RunQuoridor import run_quoridor
+
 from SushiGo.SushiGoBoard import SushiGoBoard
 from SushiGo.SushiGoHumanPlayer import SushiGoHumanPlayer
 from SushiGo.SushiGoCPUPlayerAdapter import SushiGoCPUPlayerAdapter
