@@ -3,7 +3,7 @@ from collections import Counter, defaultdict
 from SushiGo.Card import Card
 
 
-class SushiGoKanchiSahooPlayer:
+class SushiGoKanchiSahooPlayerOld:
     def __init__(self, name=None):
         self.name = name or "Kanchi + Sahoo"
         self._early_priorities = {
@@ -43,6 +43,7 @@ class SushiGoKanchiSahooPlayer:
         ]
 
     def choose_move(self, hand, visible_cards, current_round, player_adapter=None):
+
         # early and late game priorities (etc. u dont want chopsticks when theres 2 cards left for example, or first tempura that late)
         priorities = (
             self._early_priorities if current_round < 3 else self._late_priorities
@@ -66,9 +67,6 @@ class SushiGoKanchiSahooPlayer:
             combo = self._find_best_combo(hand)
             if combo:
                 return combo
-            # if only two cards remain, always use chopsticks to play both otherwise chopsticks go to waste
-            if len(hand) == 2:
-                return (0, 1)
 
         # greedy algorithm for determining our score based on the priorities we defined and certain events to boost priority
         best_index = 0
@@ -90,7 +88,7 @@ class SushiGoKanchiSahooPlayer:
             if card.type == Card.Type.CHOPSTICKS and chopsticks_count > 0:
                 score -= 1000
 
-            # if we got a wasabi down, put a squid or salmon nigiri down as a bonus. egg prob isn't worth it most the time,
+            # if we got a wasabi down, put a squid or salmon nigiri down as a bonus. egg prob isn't worth it most the time, 
             # so we don't include that here. however this may need changing.
             has_wasabi = any(c.type == Card.Type.WASABI for c in played)
             if has_wasabi:
@@ -98,8 +96,6 @@ class SushiGoKanchiSahooPlayer:
                     score += 50
                 elif card.type == Card.Type.SALMON_NIGIRI:
                     score += 30
-                elif card.type == Card.Type.EGG_NIGIRI:
-                    score += 10
 
             # boost pudding in last card of each round because we dont want to fall behind then
             if current_round == 3 and len(hand) <= 2 and card.type == Card.Type.PUDDING:

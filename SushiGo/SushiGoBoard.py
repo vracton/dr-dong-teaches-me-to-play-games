@@ -6,33 +6,37 @@ from SushiGo.SushiGoMove import SushiGoMove
 
 from TiePlayer import TiePlayer
 
-BLACK = 0,0,0
-RED = 255,0,0
-BLUE = 0,0,255
+BLACK = 0, 0, 0
+RED = 255, 0, 0
+BLUE = 0, 0, 255
 WHITE = 255, 255, 255
 
-class SushiGoBoard(GameState):
 
+class SushiGoBoard(GameState):
     def __init__(self, players):
         super().__init__(players)
 
         # Basic setup
         self.hands = {player: [] for player in players}
         self.played_cards = {player: [] for player in players}
-        self.cards_to_be_played = {player: [] for player in players} # Cards that have been chosen but not revealed
+        self.cards_to_be_played = {
+            player: [] for player in players
+        }  # Cards that have been chosen but not revealed
         self.deck = DeckOfCards()
         self.deck.initialize_deck()
         self.scores = {player: 0 for player in players}
-        
+
         self.output = True
 
         self.setup_round(1)
-    
+
     def setup_round(self, round_number):
         # Clear played cards except pudding
         for entry in self.played_cards.items():
             player, cards = entry
-            self.played_cards[player] = [card for card in cards if card.type == Card.Type.PUDDING]
+            self.played_cards[player] = [
+                card for card in cards if card.type == Card.Type.PUDDING
+            ]
 
         # Just to be safe
         self.cards_to_be_played = {player: [] for player in self.players}
@@ -48,24 +52,33 @@ class SushiGoBoard(GameState):
     def clone(self):
         newBoard = SushiGoBoard(self.players)
         newBoard.hands = {player: list(cards) for player, cards in self.hands.items()}
-        newBoard.played_cards = {player: list(cards) for player, cards in self.played_cards.items()}
+        newBoard.played_cards = {
+            player: list(cards) for player, cards in self.played_cards.items()
+        }
         newBoard.deck = self.deck.clone()
-        newBoard.cards_to_be_played = {player: list(cards) for player, cards in self.cards_to_be_played.items()}
+        newBoard.cards_to_be_played = {
+            player: list(cards) for player, cards in self.cards_to_be_played.items()
+        }
         newBoard.current_player = self.current_player
         newBoard.current_round = self.current_round
         return newBoard
-    
-    def getPossibleMoves(self):       
+
+    def getPossibleMoves(self):
         moves = []
         for card in self.hands[self.current_player]:
             moves.append(SushiGoMove(self.current_player, card))
         # Don't forget chopsticks!
-        if any(card.type == Card.Type.CHOPSTICKS for card in self.played_cards[self.current_player]):
+        if any(
+            card.type == Card.Type.CHOPSTICKS
+            for card in self.played_cards[self.current_player]
+        ):
             for i in range(len(self.hands[self.current_player])):
                 for j in range(i + 1, len(self.hands[self.current_player])):
                     first_card = self.hands[self.current_player][i]
                     second_card = self.hands[self.current_player][j]
-                    moves.append(SushiGoMove(self.current_player, first_card, second_card))
+                    moves.append(
+                        SushiGoMove(self.current_player, first_card, second_card)
+                    )
         return moves
 
     def checkIsValid(self, move):
@@ -76,7 +89,10 @@ class SushiGoBoard(GameState):
         if move.card not in self.hands[self.current_player]:
             return False
         if move.second_card:
-            if not any(card.type == Card.Type.CHOPSTICKS for card in self.played_cards[self.current_player]):
+            if not any(
+                card.type == Card.Type.CHOPSTICKS
+                for card in self.played_cards[self.current_player]
+            ):
                 return False
             if move.second_card not in self.hands[self.current_player]:
                 return False
@@ -96,7 +112,6 @@ class SushiGoBoard(GameState):
         # At the end of each hand, reveal cards
         if all(len(self.cards_to_be_played[player]) > 0 for player in self.players):
             for player in self.players:
-
                 # Remove chopsticks from played cards if they are being used
                 if len(self.cards_to_be_played[player]) == 2:
                     if self.output:
@@ -109,7 +124,9 @@ class SushiGoBoard(GameState):
                             chopsticks_found = True
                             break
                     if not chopsticks_found:
-                        raise ValueError("Chopsticks not found in played cards when expected.")
+                        raise ValueError(
+                            "Chopsticks not found in played cards when expected."
+                        )
                 # Play the cards
                 for card in self.cards_to_be_played[player]:
                     self.played_cards[player].append(card)
@@ -132,10 +149,12 @@ class SushiGoBoard(GameState):
             if len(self.hands[self.players[0]]) == 0:
                 print("End of round!")
                 for player in self.players:
-                        round_score = self.score_cards(player, self.played_cards[player])
-                        self.scores[player] += round_score
-                        if self.output:
-                            print(f"{player.name} scores {round_score} points this round.  Total score: {self.scores[player]}")
+                    round_score = self.score_cards(player, self.played_cards[player])
+                    self.scores[player] += round_score
+                    if self.output:
+                        print(
+                            f"{player.name} scores {round_score} points this round.  Total score: {self.scores[player]}"
+                        )
 
                 if self.current_round < 3:
                     if self.output:
@@ -149,19 +168,21 @@ class SushiGoBoard(GameState):
                         pudding_score = self.score_pudding(player)
                         self.scores[player] += pudding_score
                         if self.output:
-                            print(f"{player.name} scores {pudding_score} points from puddings.  Total score: {self.scores[player]}")
+                            print(
+                                f"{player.name} scores {pudding_score} points from puddings.  Total score: {self.scores[player]}"
+                            )
                     pass
 
         return self
-    
+
     def currentPlayer(self):
         return self.current_player
-    
+
     def next_player(self):
         current_index = self.players.index(self.current_player)
         next_index = (current_index + 1) % len(self.players)
         return self.players[next_index]
-        
+
     def getGameEnded(self):
         if self.current_round == 3 and len(self.hands[self.players[-1]]) == 0:
             scores = self.scoreBoard()
@@ -172,7 +193,7 @@ class SushiGoBoard(GameState):
             else:
                 return TiePlayer(winners)
         return False
-            
+
     def scoreBoard(self):
         # return the score for each player
         scores = {}
@@ -197,7 +218,11 @@ class SushiGoBoard(GameState):
         dumpling_scores = [0, 1, 3, 6, 10, 15]
         score += dumpling_scores[min(dumpling_count, 5)]
         wasabi = []
-        nigiri_scores = {Card.Type.SALMON_NIGIRI: 2, Card.Type.SQUID_NIGIRI: 3, Card.Type.EGG_NIGIRI: 1}
+        nigiri_scores = {
+            Card.Type.SALMON_NIGIRI: 2,
+            Card.Type.SQUID_NIGIRI: 3,
+            Card.Type.EGG_NIGIRI: 1,
+        }
         for card in cards:
             if card.type == Card.Type.WASABI:
                 wasabi.append(card)
@@ -230,26 +255,49 @@ class SushiGoBoard(GameState):
                 elif card.type == Card.Type.TRIPLE_MAKI:
                     maki_counts[player] = maki_counts.get(player, 0) + 3
         maki_counts = sorted(maki_counts.items(), key=lambda x: x[1], reverse=True)
-        winners = [player for player, count in maki_counts if count == maki_counts[0][1]]
-        second_place = [player for player, count in maki_counts if count == maki_counts[1][1]]
+
+        # If no one has maki, return empty winners and second place
+        if not maki_counts:
+            return [], []
+
+        top_count = maki_counts[0][1]
+        winners = [player for player, count in maki_counts if count == top_count]
+
+        # Find the highest count strictly less than top_count for second place (if any)
+        remaining_counts = [count for player, count in maki_counts if count < top_count]
+        if not remaining_counts:
+            second_place = []
+        else:
+            second_count = max(remaining_counts)
+            second_place = [
+                player for player, count in maki_counts if count == second_count
+            ]
+
         return winners, second_place
 
     def find_pudding(self):
         pudding_counts = {}
         for player in self.players:
-            pudding_counts[player] = sum(1 for card in self.played_cards[player] if card.type == Card.Type.PUDDING)
-        pudding_counts = sorted(pudding_counts.items(), key=lambda x: x[1], reverse=True)
+            pudding_counts[player] = sum(
+                1
+                for card in self.played_cards[player]
+                if card.type == Card.Type.PUDDING
+            )
+        pudding_counts = sorted(
+            pudding_counts.items(), key=lambda x: x[1], reverse=True
+        )
         if pudding_counts[0][1] == pudding_counts[-1][1]:
             return None, None
-        winners = [player for player, count in pudding_counts if count == pudding_counts[0][1]]
-        losers = [player for player, count in pudding_counts if count == pudding_counts[-1][1]]
+        winners = [
+            player for player, count in pudding_counts if count == pudding_counts[0][1]
+        ]
+        losers = [
+            player for player, count in pudding_counts if count == pudding_counts[-1][1]
+        ]
         return winners, losers
 
     def initializeDrawing(self):
         pass
-        
+
     def drawBoard(self):
         pass
-
-        
-
