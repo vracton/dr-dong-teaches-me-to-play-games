@@ -18,10 +18,11 @@ def run_game(players, print = True):
     return scores
 
 def default_run(output = True):
-    player1 = QuoridorHumanPlayer("Dr. Dong")
+    # player1 = QuoridorHumanPlayer("Dr. Dong")
+    player1 = QuoridorYOURNAMEPlayer()
     player2 = RandomPlayer("Random bot 1")
-    player3 = RandomPlayer("Random bot 2")
-    player4 = QuoridorYOURNAMEPlayer()
+    player3 = RandomPlayer("Random bot 1")
+    player4 = RandomPlayer("Random bot 2")
 
     scores = run_game([player1, player2], output)
 
