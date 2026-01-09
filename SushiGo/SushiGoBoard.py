@@ -130,7 +130,7 @@ class SushiGoBoard(GameState):
 
             # Check for end of round
             if len(self.hands[self.players[0]]) == 0:
-                print("End of round!")
+                # print("End of round!")
                 for player in self.players:
                         round_score = self.score_cards(player, self.played_cards[player])
                         self.scores[player] += round_score
@@ -231,7 +231,8 @@ class SushiGoBoard(GameState):
                     maki_counts[player] = maki_counts.get(player, 0) + 3
         maki_counts = sorted(maki_counts.items(), key=lambda x: x[1], reverse=True)
         winners = [player for player, count in maki_counts if count == maki_counts[0][1]]
-        second_place = [player for player, count in maki_counts if count == maki_counts[1][1]]
+        second_place_target = maki_counts[1][1] if len(maki_counts) > 1 else None
+        second_place = [player for player, count in maki_counts if second_place_target is not None and count == second_place_target]
         return winners, second_place
 
     def find_pudding(self):
