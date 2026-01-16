@@ -7,12 +7,13 @@ from Quoridor.Coordinate import Coordinate
 import pygame
 
 from TiePlayer import TiePlayer
+
 pygame.init()
 
-BLACK = 0,0,0
-PLAYER1 = 255,0,0
-PLAYER2 = 0,0,255
-PLAYER3 = 0,150,50
+BLACK = 0, 0, 0
+PLAYER1 = 255, 0, 0
+PLAYER2 = 0, 0, 255
+PLAYER3 = 0, 150, 50
 PLAYER4 = 200, 200, 0
 WHITE = 50, 50, 50
 FENCE_COLOR = 150, 150, 150
@@ -29,31 +30,35 @@ HEIGHT = 480
 
 pygame.font.init()
 
+
 class QuoridorBoard(GameState):
-    
     def __init__(self, players):
         super().__init__(players)
         "Set up initial board configuration."
 
         self.horizontal_fences = []
         self.vertical_fences = []
-       # self.forbidden_moves = {}
+        # self.forbidden_moves = {}
         self.check_possible = True
 
         if len(players) == 2:
             self.pawns = [Coordinate(4, 0), Coordinate(4, 8)]
             self.fences = [10, 10]
         elif len(players) == 4:
-            self.pawns = [Coordinate(4, 0), Coordinate(0, 4), Coordinate(4, 8), Coordinate(8, 4)]
+            self.pawns = [
+                Coordinate(4, 0),
+                Coordinate(0, 4),
+                Coordinate(4, 8),
+                Coordinate(8, 4),
+            ]
             self.fences = [5, 5, 5, 5]
         else:
             raise Exception("Illegal number of players")
 
         self.current_player = self.players[0]
-        
+
         self.game_closed = False
-        
-        
+
     def clone(self):
         newBoard = QuoridorBoard(self.players)
         newBoard.pawns = deepcopy(self.pawns)
@@ -63,18 +68,21 @@ class QuoridorBoard(GameState):
             newBoard.vertical_fences.append(deepcopy(fence))
         newBoard.current_player = self.current_player
         return newBoard
-    
-    def getPossibleMoves(self):       
-        return self.get_legal_moves_for_player(self.current_player) + self.get_legal_fences(self.current_player)
+
+    def getPossibleMoves(self):
+        return self.get_legal_moves_for_player(
+            self.current_player
+        ) + self.get_legal_fences(self.current_player)
 
         # Find the index of your player
+
     def findIndex(self, player):
         for i in range(len(self.players)):
             if self.players[i] == player:
                 return i
         raise "Player not found"
 
-# Move the pawn
+    # Move the pawn
     def move_pawn(self, player, new_coord):
         if self.is_legal_move(player, new_coord):
             self.pawns[self.findIndex(player)] = new_coord
@@ -85,7 +93,7 @@ class QuoridorBoard(GameState):
     def add_fence(self, player, coord1, is_horizontal):
         if self.fences[self.findIndex(player)] == 0:
             raise Exception("No fences remain!")
-        new_fence = Fence(coord1, is_horizontal)
+        new_fence = Fence(coord1, is_horizontal, player)
         for fence in self.all_fences():
             if fence.check_conflict(new_fence):
                 raise Exception("Fence in illegal location!")
@@ -94,7 +102,7 @@ class QuoridorBoard(GameState):
         else:
             self.vertical_fences.append(new_fence)
 
-        #for coord_pair in new_fence.forbidden_moves():
+        # for coord_pair in new_fence.forbidden_moves():
         #    if coord_pair[0] not in self.forbidden_moves:
         #        self.forbidden_moves[coord_pair[0]] = []
         #    self.forbidden_moves[coord_pair[0]].append(coord_pair[1])
@@ -114,10 +122,16 @@ class QuoridorBoard(GameState):
 
     # Check if you can move from current to new_coord without going through any fences
     def check_fences(self, current, new_coord):
-        return (current.x == new_coord.x and self.test_fences(self.horizontal_fences, current, new_coord)) or (current.y == new_coord.y and self.test_fences(self.vertical_fences, current, new_coord))
-        #if current not in self.forbidden_moves:
+        return (
+            current.x == new_coord.x
+            and self.test_fences(self.horizontal_fences, current, new_coord)
+        ) or (
+            current.y == new_coord.y
+            and self.test_fences(self.vertical_fences, current, new_coord)
+        )
+        # if current not in self.forbidden_moves:
         #    return True
-        #else:
+        # else:
         #    return new_coord not in self.forbidden_moves[current]
 
     # Get all possible positions you can jump to if you are on current and another pawn is on move
@@ -144,16 +158,23 @@ class QuoridorBoard(GameState):
         else:
             # Get new targets
             if current.x == move.x:
-                new_targets = [Coordinate(current.x - 1, move.y), Coordinate(current.x + 1, move.y)]
+                new_targets = [
+                    Coordinate(current.x - 1, move.y),
+                    Coordinate(current.x + 1, move.y),
+                ]
             else:
-                new_targets = [Coordinate(move.x, current.y - 1), Coordinate(move.x, current.y + 1)]
+                new_targets = [
+                    Coordinate(move.x, current.y - 1),
+                    Coordinate(move.x, current.y + 1),
+                ]
 
             final_moves = []
             for new_target in new_targets:
-                if self.check_fences(move, new_target) and not self.is_occupied(new_target):
+                if self.check_fences(move, new_target) and not self.is_occupied(
+                    new_target
+                ):
                     final_moves.append(new_target)
             return final_moves
-
 
     # Gets all legal moves for a given player's pawn - pawn moves only
     def get_legal_move_positions_for_player(self, player):
@@ -162,7 +183,12 @@ class QuoridorBoard(GameState):
     # These are moves for the pawn moves only
     def get_legal_move_positions(self, current):
         moves = []
-        potential_moves = [Coordinate(current.x - 1, current.y), Coordinate(current.x, current.y - 1), Coordinate(current.x + 1, current.y), Coordinate(current.x, current.y + 1)]
+        potential_moves = [
+            Coordinate(current.x - 1, current.y),
+            Coordinate(current.x, current.y - 1),
+            Coordinate(current.x + 1, current.y),
+            Coordinate(current.x, current.y + 1),
+        ]
         for move in potential_moves:
             # Make sure it's legal
             if not move.is_legal():
@@ -183,13 +209,13 @@ class QuoridorBoard(GameState):
 
     # These are possible fences
     def get_legal_fences(self, player):
-        if (self.fences[self.findIndex(player)] == 0):
+        if self.fences[self.findIndex(player)] == 0:
             return []
         fences = []
-        # Horizontal 
+        # Horizontal
         for ix in range(0, 8):
             for iy in range(1, 9):
-                potential_fence = Fence(Coordinate(ix, iy), True)
+                potential_fence = Fence(Coordinate(ix, iy), True, None)
                 found_conflict = False
                 for fence in self.all_fences():
                     if fence.check_conflict(potential_fence):
@@ -200,11 +226,13 @@ class QuoridorBoard(GameState):
                 if self.check_possible:
                     if not self.check_if_possible(potential_fence):
                         continue
-                fences.append(QuoridorMove.add_fence(potential_fence, self.current_player))
+                fences.append(
+                    QuoridorMove.add_fence(potential_fence, self.current_player)
+                )
         # Vertical
         for ix in range(1, 9):
             for iy in range(0, 8):
-                potential_fence = Fence(Coordinate(ix, iy), False)
+                potential_fence = Fence(Coordinate(ix, iy), False, None)
                 found_conflict = False
                 for fence in self.all_fences():
                     if fence.check_conflict(potential_fence):
@@ -215,7 +243,9 @@ class QuoridorBoard(GameState):
                 if self.check_possible:
                     if not self.check_if_possible(potential_fence):
                         continue
-                fences.append(QuoridorMove.add_fence(potential_fence, self.current_player))
+                fences.append(
+                    QuoridorMove.add_fence(potential_fence, self.current_player)
+                )
         return fences
 
     # Check to make sure it is still possible to get across the board
@@ -266,16 +296,16 @@ class QuoridorBoard(GameState):
     # Return a lambda function which determines if a coordinate satisfied the win condition for a particular player
     def get_target(self, player):
         if player == 0:
-            return lambda a : a.y == 8
+            return lambda a: a.y == 8
         if player == 1:
             if len(self.pawns) == 2:
-                return lambda a : a.y == 0
+                return lambda a: a.y == 0
             elif len(self.pawns) == 4:
-                return lambda a : a.x == 8
+                return lambda a: a.x == 8
         if player == 2:
-            return lambda a : a.y == 0
+            return lambda a: a.y == 0
         if player == 3:
-            return lambda a : a.x == 0
+            return lambda a: a.x == 0
 
         raise Exception("Illegal player number entered")
 
@@ -292,10 +322,6 @@ class QuoridorBoard(GameState):
             legal_moves.append(QuoridorMove.move_pawn(move, player))
         return legal_moves
 
-
-
-
-    
     def checkIsValid(self, move):
         if move.type == QuoridorMoveType.MOVE:
             return self.is_legal_move(move.player, move.coord)
@@ -313,18 +339,20 @@ class QuoridorBoard(GameState):
             raise "Illegal move type"
         self.current_player = self.nextPlayer()
         return self
-    
+
     def currentPlayer(self):
         return self.current_player
-    
+
     def nextPlayer(self):
         playerIndex = self.findIndex(self.current_player)
 
-        if (len(self.pawns) == 2 and self.current_player == self.players[1]) or (len(self.pawns) == 4 and self.current_player == self.players[3]):
+        if (len(self.pawns) == 2 and self.current_player == self.players[1]) or (
+            len(self.pawns) == 4 and self.current_player == self.players[3]
+        ):
             return self.players[0]
         else:
             return self.players[playerIndex + 1]
-        
+
     def getGameEnded(self):
         if len(self.pawns) == 2:
             if self.pawns[0].y == 8:
@@ -341,27 +369,52 @@ class QuoridorBoard(GameState):
             elif self.pawns[3].x == 0:
                 return self.players[3]
         return False
-    
+
     def scoreBoard(self):
         if len(self.pawns) == 2:
             if self.pawns[0].y == 8:
-                return {self.players[0] : 1, self.players[1] : -1}
+                return {self.players[0]: 1, self.players[1]: -1}
             elif self.pawns[1].y == 0:
-                return {self.players[0] : -1, self.players[1] : 1}
+                return {self.players[0]: -1, self.players[1]: 1}
             else:
-                return {self.players[0] : 0, self.players[1] : 0}
+                return {self.players[0]: 0, self.players[1]: 0}
         if len(self.pawns) == 4:
             if self.pawns[0].y == 8:
-                return {self.players[0] : 1, self.players[1] : -1, self.players[2] : -1, self.players[3] : -1}
+                return {
+                    self.players[0]: 1,
+                    self.players[1]: -1,
+                    self.players[2]: -1,
+                    self.players[3]: -1,
+                }
             elif self.pawns[1].x == 8:
-                return {self.players[0] : -1, self.players[1] : 1, self.players[2] : -1, self.players[3] : -1}
+                return {
+                    self.players[0]: -1,
+                    self.players[1]: 1,
+                    self.players[2]: -1,
+                    self.players[3]: -1,
+                }
             elif self.pawns[2].y == 0:
-                return {self.players[0] : -1, self.players[1] : -1, self.players[2] : 1, self.players[3] : -1}
+                return {
+                    self.players[0]: -1,
+                    self.players[1]: -1,
+                    self.players[2]: 1,
+                    self.players[3]: -1,
+                }
             elif self.pawns[3].x == 0:
-                return {self.players[0] : -1, self.players[1] : -1, self.players[2] : -1, self.players[3] : 1}
+                return {
+                    self.players[0]: -1,
+                    self.players[1]: -1,
+                    self.players[2]: -1,
+                    self.players[3]: 1,
+                }
             else:
-                return {self.players[0] : 0, self.players[1] : 0, self.players[2] : 0, self.players[3] : 0}
-        
+                return {
+                    self.players[0]: 0,
+                    self.players[1]: 0,
+                    self.players[2]: 0,
+                    self.players[3]: 0,
+                }
+
     def initializeDrawing(self):
         # These all have to be class variables to avoid resetting them
         QuoridorBoard.screen = pygame.display.set_mode((WIDTH, HEIGHT))
@@ -374,11 +427,17 @@ class QuoridorBoard(GameState):
         QuoridorBoard.top_disp_offset = QuoridorBoard.box_size
 
         QuoridorBoard.game_closed = False
-        
+
     def drawBoard(self):
         self.drawBoardInternal()
 
-    def drawBoardInternal(self, potential_moves = [], current_space = [], potential_fences = [], current_fence = []):
+    def drawBoardInternal(
+        self,
+        potential_moves=[],
+        current_space=[],
+        potential_fences=[],
+        current_fence=[],
+    ):
         if not QuoridorBoard.game_closed:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -390,13 +449,25 @@ class QuoridorBoard(GameState):
 
             # Drawing the grid
             for row_num in range(0, 10):
-                row_start = (QuoridorBoard.left_disp_offset, QuoridorBoard.top_disp_offset + (QuoridorBoard.box_size * row_num))
-                row_end = (QuoridorBoard.left_disp_offset + (QuoridorBoard.box_size * 9), QuoridorBoard.top_disp_offset + (QuoridorBoard.box_size * row_num))
+                row_start = (
+                    QuoridorBoard.left_disp_offset,
+                    QuoridorBoard.top_disp_offset + (QuoridorBoard.box_size * row_num),
+                )
+                row_end = (
+                    QuoridorBoard.left_disp_offset + (QuoridorBoard.box_size * 9),
+                    QuoridorBoard.top_disp_offset + (QuoridorBoard.box_size * row_num),
+                )
                 pygame.draw.line(QuoridorBoard.screen, WHITE, row_start, row_end)
             for col_num in range(0, 10):
-                col_start = (QuoridorBoard.left_disp_offset + (QuoridorBoard.box_size * col_num), QuoridorBoard.top_disp_offset)
-                col_end = (QuoridorBoard.left_disp_offset + (QuoridorBoard.box_size * col_num), QuoridorBoard.top_disp_offset + (QuoridorBoard.box_size * 9))
-                #if col_num > 0:
+                col_start = (
+                    QuoridorBoard.left_disp_offset + (QuoridorBoard.box_size * col_num),
+                    QuoridorBoard.top_disp_offset,
+                )
+                col_end = (
+                    QuoridorBoard.left_disp_offset + (QuoridorBoard.box_size * col_num),
+                    QuoridorBoard.top_disp_offset + (QuoridorBoard.box_size * 9),
+                )
+                # if col_num > 0:
                 #    col_label = my_font.render(str(col_num), 1, WHITE)
                 #    QuoridorBoard.screen.blit(col_label, (QuoridorBoard.left_disp_offset + (QuoridorBoard.box_size * col_num) - QuoridorBoard.box_size / 2, QuoridorBoard.height - 40))
                 pygame.draw.line(QuoridorBoard.screen, WHITE, col_start, col_end)
@@ -406,28 +477,72 @@ class QuoridorBoard(GameState):
 
             # Drawing potential squares
             for position in potential_moves:
-                pygame.draw.rect(QuoridorBoard.screen, highlight_color, pygame.Rect(int(QuoridorBoard.box_size * position.coord.x) + QuoridorBoard.left_disp_offset + 1, int(QuoridorBoard.box_size * position.coord.y) + QuoridorBoard.top_disp_offset + 1, QuoridorBoard.box_size - 1, QuoridorBoard.box_size - 1))
+                pygame.draw.rect(
+                    QuoridorBoard.screen,
+                    highlight_color,
+                    pygame.Rect(
+                        int(QuoridorBoard.box_size * position.coord.x)
+                        + QuoridorBoard.left_disp_offset
+                        + 1,
+                        int(QuoridorBoard.box_size * position.coord.y)
+                        + QuoridorBoard.top_disp_offset
+                        + 1,
+                        QuoridorBoard.box_size - 1,
+                        QuoridorBoard.box_size - 1,
+                    ),
+                )
 
             # Drawing current cursor position for move
             for position in current_space:
-                pygame.draw.rect(QuoridorBoard.screen, HIGHLIGHT, pygame.Rect(int(QuoridorBoard.box_size * position.coord.x) + QuoridorBoard.left_disp_offset + 1, int(QuoridorBoard.box_size * position.coord.y) + QuoridorBoard.top_disp_offset + 1, QuoridorBoard.box_size - 1, QuoridorBoard.box_size - 1))
+                pygame.draw.rect(
+                    QuoridorBoard.screen,
+                    HIGHLIGHT,
+                    pygame.Rect(
+                        int(QuoridorBoard.box_size * position.coord.x)
+                        + QuoridorBoard.left_disp_offset
+                        + 1,
+                        int(QuoridorBoard.box_size * position.coord.y)
+                        + QuoridorBoard.top_disp_offset
+                        + 1,
+                        QuoridorBoard.box_size - 1,
+                        QuoridorBoard.box_size - 1,
+                    ),
+                )
 
             # Drawing pieces
             for i in range(len(self.pawns)):
                 pawn = self.pawns[i]
-                pos = (int(QuoridorBoard.box_size * (pawn.x + 0.5)) + QuoridorBoard.left_disp_offset + 1,
-                        int(QuoridorBoard.box_size * (pawn.y + 0.5)) + QuoridorBoard.top_disp_offset + 1)
-                pygame.draw.circle(QuoridorBoard.screen, COLORS[i], pos, QuoridorBoard.radius - 1)
+                pos = (
+                    int(QuoridorBoard.box_size * (pawn.x + 0.5))
+                    + QuoridorBoard.left_disp_offset
+                    + 1,
+                    int(QuoridorBoard.box_size * (pawn.y + 0.5))
+                    + QuoridorBoard.top_disp_offset
+                    + 1,
+                )
+                pygame.draw.circle(
+                    QuoridorBoard.screen, COLORS[i], pos, QuoridorBoard.radius - 1
+                )
 
             # Draw potential fences
             for fence in potential_fences:
                 self.draw_fence(fence.coord, fence.is_horizontal, highlight_color)
-    
+
             # Drawing fences
             for fence in self.horizontal_fences:
-                self.draw_fence(fence.first, fence.is_horizontal, FENCE_COLOR)
+                color = (
+                    COLORS[self.findIndex(fence.player)]
+                    if fence.player
+                    else FENCE_COLOR
+                )
+                self.draw_fence(fence.first, fence.is_horizontal, color)
             for fence in self.vertical_fences:
-                self.draw_fence(fence.first, fence.is_horizontal, FENCE_COLOR)
+                color = (
+                    COLORS[self.findIndex(fence.player)]
+                    if fence.player
+                    else FENCE_COLOR
+                )
+                self.draw_fence(fence.first, fence.is_horizontal, color)
 
             # Draw current potential fence
             for fence in current_fence:
@@ -435,15 +550,16 @@ class QuoridorBoard(GameState):
 
             # Display information on the side:
 
-    
             string = "Current player: %i" % (self.findIndex(self.current_player) + 1)
-            position = Coordinate(self.left_disp_offset + (self.box_size * (ROWS + .5)), self.height * .2)
+            position = Coordinate(
+                self.left_disp_offset + (self.box_size * (ROWS + 0.5)),
+                self.height * 0.2,
+            )
             self.draw_string(string, color, position)
             for i_player, n_fences in enumerate(self.fences):
                 string = "Player %i: %i fences left" % (i_player + 1, n_fences)
-                position.y += QuoridorBoard.height * .05
+                position.y += QuoridorBoard.height * 0.05
                 self.draw_string(string, COLORS[i_player], position)
-
 
             pygame.display.flip()
 
@@ -459,10 +575,12 @@ class QuoridorBoard(GameState):
             second_x += 2
         else:
             second_y += 2
-        pos1 = (int(QuoridorBoard.box_size * coord.x) + QuoridorBoard.left_disp_offset,
-                int(QuoridorBoard.box_size * coord.y) + QuoridorBoard.top_disp_offset)
-        pos2 = (int(QuoridorBoard.box_size * second_x) + QuoridorBoard.left_disp_offset,
-                int(QuoridorBoard.box_size * second_y) + QuoridorBoard.top_disp_offset)
+        pos1 = (
+            int(QuoridorBoard.box_size * coord.x) + QuoridorBoard.left_disp_offset,
+            int(QuoridorBoard.box_size * coord.y) + QuoridorBoard.top_disp_offset,
+        )
+        pos2 = (
+            int(QuoridorBoard.box_size * second_x) + QuoridorBoard.left_disp_offset,
+            int(QuoridorBoard.box_size * second_y) + QuoridorBoard.top_disp_offset,
+        )
         pygame.draw.line(QuoridorBoard.screen, color, pos1, pos2, FENCE_WIDTH)
-        
-

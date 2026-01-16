@@ -22,12 +22,12 @@ def run_game(players, print = True):
     return scores
 
 def default_run(output = True):
-    player1 = QuoridorSahooPlayer()
-    player2 = QuoridorAggressiveWallPlayer()
+    player1 = QuoridorYOURNAMEPlayer()
+    player2 = RandomPlayer("A")
     player3 = RandomPlayer("Random bot 2")
     player4 = QuoridorYOURNAMEPlayer()
 
-    scores = run_game([player2, player1], output)
+    scores = run_game([player1, player2], output)
 
     for player in scores:
         print(f"Player {player.name}: {scores[player]} points")

@@ -1,8 +1,14 @@
-generally, use dijkstra or A* 
+generally, use dijkstra or A* to determine path to go
+there should be a priority weighting that shfits over the term of the game
+so at the start, place more aggressive walsl tos low the enemy down but don;takeuse all of your walls
+make sure that when placing walls, you maximize enemy time to leave via blocking and full optimization over all possibilities near the enemy
 
-every single turn check if you are prone to being blocked via another dijksta to see how many open paths you have based on walls (not on first move)
+also, check every turn if you are prone to being blocked. this should be 
+a lower priority at the start that slowly gets higher. if you are in 
+an area with two exits and one is logner than the other, block the long exits
+this should really be the only defensive walls you should place, as you 
+cannot block the enemy completely, so now they can' tbock your path.
 
-then from there you block their blockage of the longer path so you can go the hsorter path
-
-and then also every move you do another calculation to see the enemy's position and run 
-maybe a local greedy search of some kind to find a wall to maximize the amount of movecs it would take to surpass the wall
+in general, make sure to find a balance between aggressive awlls at the 
+first coupole moves, making sure to get tempo and move over the enemy, and
+sparsingly placing defensive walls when absolutely necessary. 
